@@ -2,12 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo 'Code checked out from GitHub'
-            }
-        }
-
         stage('Build') {
             steps {
                 echo 'Building Server Monitoring Dashboard'
@@ -17,19 +11,21 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Testing required files'
+                echo 'Checking required files'
                 sh 'test -f index.html'
                 sh 'test -f style.css'
                 sh 'test -f script.js'
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to Nginx') {
             steps {
-                echo 'Deployment simulated successfully'
-                sh 'mkdir -p deployed'
-                sh 'cp index.html style.css script.js deployed/'
-                sh 'ls -l deployed'
+                echo 'Deploying dashboard to Nginx'
+                sh '''
+                rm -rf /var/www/html/*
+                cp index.html style.css script.js /var/www/html/
+                ls -l /var/www/html/
+                '''
             }
         }
     }
